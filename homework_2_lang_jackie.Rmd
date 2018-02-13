@@ -1,0 +1,132 @@
+---
+title: "COMPSCIX 415.2 Homework 2"
+author: "Jackie Lang"
+date: "February 6, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#3.2.4.1
+When you run only ggplot(data = mpg) only a big, gray box is visable.
+```{r}
+ggplot(data = mpg)
+```
+
+#3.4.2.2
+There are 234 rows and 10 columns in the mpg dataset.
+```{r}
+ggplot2::mpg
+```
+
+#3.4.2.3
+The drv variable describes the "wheel drive" of the vehicle. f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+
+#3.4.2.4
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = hwy, y = cyl))
+```
+
+#3.4.2.5
+This plot isn't helpful because it doesn't provide this information in a useful way. A histogram would be better suited to compare and analyze these two variables.
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = class, y = drv))
+```
+
+#3.3.1.1
+The points aren't blue because the "color" level is inside the same function as the coordinates. Coordinates are their own aes() function, and in order to manually set the color as "blue" it should look like:
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+  
+#3.3.1.2
+The categorical variables are: manufacturer, model, cyl, trans, drv, fl, class. The continuous variables are: displ, year, cty, hwy. You can view this information in the help pane in RStudio after typing mpg? in the console pane.
+
+#3.3.1.3
+I used the "year" continuous variable and mapped it to color, size, and shape. The results for all three did not result in viable graphs -- for color, the gradation is too subtle to be useful, using size and year also doesn't make sense visually (the years aren't assigned different sizes), and I got an error message for trying to map shape to year(it tops out at 6 variables, so it can only be used for categorical variables). So I commented the last chunk out. See the examples below.
+
+These aesthetics work much better for categorical variables (see final example below for this question)
+
+color=year
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, color = year))
+```
+size = year
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, size = year))
+```
+shape = year
+```{r}
+#ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, shape = year))
+```
+categorical: color = trans
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, color = trans))
+```
+
+#3.3.1.4
+If  you map the same variable to multiple aes() functions, it applies both. 
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, color = drv, shape = drv))
+```
+
+#3.3.1.5
+The "stroke" aes() appears to control the size/fill. And it also seems to only work with categorical (non binary) variables. 
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, alpha = cty, stroke = cty))
+```
+
+#3.3.1.6
+It creates a true/false argumemnt in the aes() function, and true and false are each designated a color.
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = manufacturer, y = model, color = displ< 5))
+```
+
+#3.5.1.4
+One of the advantages to using a facet_wrap for categorical variables is that it is easier to compare them against each other. It creates smaller discrete plots and makes it easier to look at the individual instances within a variable. The disadvantages would be that it's a little less visually striking and if you are intersted in the aggregate comparison, it's less helpful. The larger the dataset, the more useful facet_wrap would be to facet multiple variables, and for comparitive purposes and to identify patterns and trends.
+
+facet_wrap example:
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+
+#3.5.1.5
+nrow: the number of rows
+ncol: the number of columns
+Some of the other variables which control the layout of individual panels include: labeller, as.table, switch, drop, dir, strip.position. Facet_grid doesn't have nrow or ncol arguments because you are designating only two variables.
+
+#3.5.1.6
+You should put the variable with more unique levels in columns because of viewability. Adding columns will extend the view vertically, which is more scalable than adding more unique rows (citation: http://cfss.uchicago.edu/r4ds_solutions.html) 
+
+#3.6.1.1
+line: geom_line()
+boxplot: geom_boxplot()
+histogram: geom_histogram()
+area chart: geom_area()
+
+#3.6.1.2
+I expected to see more of an area with the smoothing graph, but I learned after seeing the displayed searching that (se = FALSE) prevents the display of the confidence interval (citation: http://ggplot2.tidyverse.org/reference/geom_smooth.html)
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+#3.6.1.3
+show.legend = FALSE prevents the display of the legend on the graph. If you remove it, then the legend set by the aes() is displayed to the right of the graph. I think it was used earlier in the chapter to demonstrate that legends are important for visualizations and should be a default assumption when creating your output, and you need to remove it purposefully.
+
+#3.6.1.4
+The se argument in geom_smooth displays the confidence interval.
+
+#3.6.1.5
+No, these two graphs should look the same. The difference here is that the first graph is leveraging global mappings and reduces redundancy and the potential for mistakes when you have to change the same variable in multiple places.
+
+#3.6.1.6
+Extra credit (will return if time allows!)
+
+#3.7.1.2
+geom_col() displays a bar chart with the height based on values in the data, whereas geom_bar() will generate a proportional height based on a statistical transformation of the data. 
