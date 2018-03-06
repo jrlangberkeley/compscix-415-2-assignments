@@ -1,0 +1,268 @@
+---
+title: "COMPSCIX 415.2 -- Jackie Lang Homework 4"
+output: 
+  html_document:
+    self_contained: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+warning = FALSE
+message = FALSE
+library(tidyverse)
+library(nycflights13)
+```
+
+##5.6.7.2
+Come up with another approach that will give you the same output as not_cancelled %>% count(dest) and not_cancelled %>% count(tailnum, wt = distance) (without using count()).
+
+Output for flights which are not cancelled, arranged by destination (not using count ():
+```{r}
+flights %>%
+  group_by(dest) %>%
+  summarize(not_cancelled = sum(!is.na(dep_time)))
+```
+
+Flights which have not been cancelled, grouped by tail number and with distance (not using count ()):
+```{r}
+flights %>%
+  group_by(tailnum) %>%
+  summarize(not_cancelled = sum(!is.na(dep_time)),
+            distance= sum(distance))
+```
+##5.6.7.4
+In terms of cancelled flights per day, there doesn't seem to be a direct relationship between the number of cancelled flights per day, except that it is possible that there may be a cascading effect due to an outside force, such as a weather event. This did not appear to be a very strong relationship.
+
+The number of cancelled flights per day, from the flights data:
+```{r}
+flights %>%
+  group_by(year, month, day) %>%
+  summarize(cancelled = sum(is.na(dep_time)))
+```
+
+Then, looking at the delay arranged by individual tail number:
+```{r}
+flights %>%
+  group_by(tailnum) %>% 
+  summarize(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n())
+```
+
+The proportion of cancelled flights related to the average delay:
+
+```{r}
+flights %>% mutate(cancelled = (is.na(dep_time) | is.na(arr_time))) %>%
+                     group_by(month, day) %>%
+            summarize(cancelled = sum(is.na(dep_delay)), 
+            n = n(),
+            mean_dep_delay = mean(dep_delay,na.rm=TRUE),
+            mean_arr_delay = mean(arr_delay,na.rm=TRUE))
+```
+
+There does appear to be a loose connection between the number of cancelled flights relative to the average delay, as seen in the plot below. I included geom_smooth () to demonstrate the pattern on the relationship. This proportional relationship does appear stronger than the cancellations per individual day.
+
+Plot:
+```{r}
+flights %>% mutate(cancelled = (is.na(dep_time) | is.na(arr_time))) %>% 
+  group_by(year,month, day) %>%
+            summarize(cancelled = sum(is.na(dep_time)),
+            n = n(),
+            mean_dep_delay = mean(dep_delay,na.rm=TRUE),
+            mean_arr_delay = mean(arr_delay,na.rm=TRUE)) %>%
+    ggplot(mapping = aes(x = cancelled, y = mean_dep_delay)) +
+  geom_point(alpha = 1) + 
+  geom_smooth(se = FALSE)
+```
+
+##5.6.7.5
+The Carrier with the worst delays is "OO", looking at the average arrival and departure delays:
+
+```{r}
+flights %>%
+  filter(arr_delay > 0) %>%
+  group_by(carrier) %>%
+  summarize(avg_arr_delay = mean(arr_delay, na.rm = TRUE),
+            avg_dep_delay = mean(dep_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_arr_delay))
+```
+
+Looking at the relationship between carrier and airport, it appears there is a stronger association between carrier and delay rather than airport and delay. However, this doesn't appear to be a very strong relationship, and it's difficult to untangle.
+
+```{r}
+flights %>% 
+  group_by(carrier, dest) %>% 
+  summarize(avg_arr_delay = mean(arr_delay, na.rm = TRUE),
+            avg_dep_delay = mean(dep_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_arr_delay))
+```
+
+##5.6.7.6
+The sort argument to count can be used to sort the output in the decending order of n, if n is TRUE. This is may be more useful than count() in some places because it will allow the programmer to see the highest value at the top, which is often valuable information. Count () is generally used just to measure the number of observations.
+
+##10.5.1
+You can tell an object is a tibble rather than a data frame through two key differences:
+1. The tibble will return what will fit on your screen. That is, it won't print out the entire data set, only the first 10 rows or so and only the number of columns that will fit on your screen. It will also report the column type on the screen.
+2. The other difference is how you subset variables. Also, tibbles will only return whole values, and not partial values (it will throw a warning if you try this).
+
+See the mtcars data.frame below:
+```{r}
+print(mtcars)
+```
+
+##10.5.2
+Observing the behavior of these commands, several parts are frustrating from the data frame. 
+
+Firstly, querying the data frame returns a partial value when I search for "x," it gives back the column value "xyz", and I get the same result when I search for the whole column "xyz." I get an error when I do the same query ($x) in the tibble, which requires exact values when returning a subset. 
+
+Also the tibble returns include the size of the table and the data types, which are useful. Please see the examples below:
+
+On data.frame:
+> df$x #returns
+[1] a
+Levels: a
+
+> df[, "xyz"] #returns
+[1] a
+Levels: a
+
+> df[, c("abc", "xyz")] #returns
+  abc xyz
+1   1   a
+
+on tibble:
+> df$x #returns
+NULL
+Warning message:
+Unknown or uninitialised column: 'x'. 
+
+> df[, "xyz"] #returns
+# A tibble: 1 x 1
+  xyz  
+  <chr>
+1 a 
+
+> df[, c("abc", "xyz")] #returns
+# A tibble: 1 x 2
+    abc xyz  
+  <dbl> <chr>
+1  1.00 a 
+
+##10.5.3
+To extract the reference variable, query it using [[]]:
+```{r}
+var <- "mpg"
+as_tibble(mtcars)[[var]]
+```
+
+##10.5.6
+The package option: tibble.max_extra_cols controls the number of extra columns printed at the footer of the tibble. The default for this package is 100. (citation: https://cran.r-project.org/web/packages/tibble/tibble.pdf)
+
+#12.3.3.2
+Because the column names are numbers, you have to add backticks for the names to be valid. The code should read:
+table4a %>% 
+  gather(`1999`, `2000`, key = "year", value = "cases")
+  
+#12.3.3.3
+Spreading this tibble fails because there are duplicate identifiers in rows 1 and 3. To fix the problem, adding a row id to group the name column and then using a spread function in key to create a new column from key (which contains both age and height data) will help (citation: https://github.com/tidyverse/tidyr/issues/296)
+
+original tribble:
+```{r}
+people <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+```
+
+updated tribble with age and height columns spread:
+```{r}
+people %>%
+  group_by(name) %>%
+  mutate(group_row = 1:n()) %>%
+  spread(key,value)
+```
+
+#12.3.3.4
+This table needs to be gathered in order to be tidy. The table should be:
+
+original tribble:
+```{r}
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+```
+
+gathered, the the variables pregnant, sex, and participants:
+```{r}
+preg %>%
+  gather(male,female, key = "sex", value = "participants")
+```
+
+##12.4.3.1.1
+The extra argument controls what happens when there are too many pieces, in the even that the sep is a character vector. There are three valid options: "warn" (the default action, emits a warning and drops extra values); "drop" (drop any extra values without a warning); and "merge" (only splits at most length(into) times).
+
+The fill argument controls what happens when there aren't ***enough*** pieces. The three valid options are: "warn" (the default action, emits a warning and fill from the right); "right" (fill with missing values on the right); and "left" (fill with missing values on the left).
+
+For this toy dataset, there rare too many values as indicated by the warning...
+```{r}
+df <- tibble(x = c("a,b,c,", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"))
+```
+
+So I used the extra argument to merge the values. When I used the default "warn", I recieved the same warning message as I did with just the separate argument.
+```{r}
+df <- tibble(x = c("a,b,c,", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "merge")
+```
+
+For the second data set:
+```{r}
+df <- tibble(x = c("a,b,c", "d,e,", "f,g,i")) %>%
+  separate(x, c("one", "two", "three"))
+```
+
+I could use a fill argument to supplement the tibble values:
+```{r}
+df <- tibble(x = c("a,b,c", "d,e,", "f,g,i")) %>%
+  separate(x, c("one", "two", "three"), fill = "right")
+```
+
+##12.4.3.1.2
+The remove argument will remove the input column from the output data frame if set to TRUE. This may be helpful if the column is full of NULL or bad values, or if the data isn't relevant to the data set and you don't want to include it. If set to FALSE, it will retain the column, and this may be valuable to retain the column of values that were separated in the final data frame (citation: https://garrettgman.github.io/tidying/).
+
+#QUESTIONS SECTION
+Importing the file baby_names.txt:
+```{r}
+file_path <- 'C:/Users/jrlang/Desktop/baby_names.txt'
+delim_data <- read_delim((file = file_path), delim = "|")
+```
+
+Glimpse the .txt file:
+```{r}
+my_data <- delim_data
+glimpse(my_data)
+```
+
+Export:
+```{r}
+write_rds(delim_data, path = 'C:/Users/jrlang/Desktop/baby_names.rds')
+```
+
+Importing rds file:
+```{r}
+file_path <- 'C:/Users/jrlang/Desktop/baby_names.rds'
+baby_names <- readRDS(file = file_path, refhook = NULL)
+```
+
+Glimpse the .rds file:
+```{r}
+as_tibble(baby_names)
+baby <- as_tibble(baby_names)
+```
