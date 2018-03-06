@@ -15,6 +15,9 @@ warning = FALSE
 message = FALSE
 library(tidyverse)
 ```
+#0 Github
+##0.1
+Link to my github repository: https://github.com/jrlangberkeley/compscix-415-2-assignments
 
 #1 Tidyverse 
 ##1.1
@@ -37,7 +40,7 @@ d. For importing and exporting data using the readr package, I've used the ***re
 
 #2 R Basics
 ##2.1
-The only character which absolutely needs to be removed is the "1" from the variable name, since white space does not create errors in R. However, I personally would take out the extra white space in the concatenate funtion and the varible name is difficult to reproduce and contains a very, very confusing naming convention. 
+The only character which absolutely needs to be removed is the "1" from the variable name, since white space does not create errors in R. However, I personally would take out the extra white space in the concatenate funtion and the varible name is difficult to reproduce and contains a very confusing naming convention. 
 
 original: My_data.name___is.too00ooLong! <- c( 1 , 2  , 3 )
 should become: 
@@ -100,14 +103,14 @@ as_tibble(rail_trail)
 
 #4 Visualization
 ##4.1
-1. One significant crique of this visualization is that the circles do not appear to be directly related to sizes based on numerical values -- they appear to have been made by "eyeballing." The proportions seem arbitrary, especially the looking at 22 vs 69 for the age group 45-64. This data would have been much better represented using another plotting method, such as a histogram.
+1. One significant crique of this visualization is that the circles do not appear to be directly related to sizes based on numerical values -- they appear to have been made by "eyeballing" which is misleading to the viewer. The proportions seem arbitrary, especially the looking at 22 vs 69 for the age group 45-64. This data would have been much better represented using another plotting method, such as a histogram.
 
-2. Another issue is the colors used in this visualization, they don't benefit the viewer. All age categories are black, women are orange, and men are purple. The only real advantage to assigning these colors is to differentiate men from women and responses based on individual sex versus responses divided by age, and this doesn't seem necessary and does not aid the viewer in understanding the graphic.
+2. Another issue is the colors used in this visualization, similar to the sizes of the circles, they also are arbitarily assigned. All age categories are black, women are orange, and men are purple, and there is no legend included with the graphic that may have indicated meaning. The use of colors in this graphic are necessary and does not aid the viewer in understanding.
 
-3. Finally, a third critique of this visualization is how the data is categorized, it is inconsistent in its treatment of groups/circles. Presented in another format, it would make more sense to divide each age group into responses by men and women rather than separate age groups for each circle responding "yes" and "no" and just grouped by gender. 
+3. Finally, a third critique of this visualization is how the data are categorized; the categories (age and gender) inconsistent in treatment of groups/circles. Presented in another format, it would make more sense to divide each age group into responses by men and women rather than separate age groups for each circle responding "yes" and "no" and just grouped by gender. Like the first issue presented, categories in this format are difficult to compare.
 
 ##4.2
-
+See below for a recreation of the diamonds visualization:
 ```{r}
 ggplot(data = diamonds) +
 geom_boxplot(aes(x = cut, y = carat, fill = color), position = position_dodge(0), width = 5) +
@@ -116,7 +119,7 @@ coord_flip()
 ```
 
 ##4.3
-I would change the graph so the boxplots are dodged by color, so I removed the function varwidth = TRUE. It makes the distribution of different colors more easily viewable for the reader.
+I would change the graph so the boxplots are dodged by color, so I removed the function varwidth = TRUE. It makes the distribution of different colors more easily viewable for the reader. See below for the updated visualization:
 
 ```{r}
 ggplot(data = diamonds, mapping = aes(x = cut, y = carat, fill = color)) +
@@ -146,7 +149,9 @@ diamonds <- price_per_carat
 ##5.3
 There are 834 instances of diamonds overall which are within the parameters of over 10000 and less than a carat weight of 1.5. This is 834/53,940 of the total number of instances in the original data set, accounting for about 1.55% of the overall dataset. I used the arithmetic feature in R to add up the totals of each cut and divided that by the total number of rows (instances) in the original dataset.
 
-I selected to output the number of each cut, and the results are surprising. I'm surprised by the (right-skewed) distribution of the number of diamonds, especially the high number of ideal cuts in this set (over half of the total). It feels like there may be missing variables in this data set which help tell the story. This leads into the other question, we may need to be wary of these numbers because they may only represent one retailer, or one "cut" of diamond (for instance, round or emerald), or could be from a time when diamonds were in particularly high demand. Or possibly diamonds which were from a dishonest distributor. There are a number of hidden variables in this dataset which could explain this subset.
+I selected to output the number of each cut, and the results are surprising. I'm surprised by the skewed distribution of the number of diamonds, especially the high number of ideal cuts in this set (over half of the total). It feels like there may be missing variables in this data set which help tell the story. 
+
+This leads into the other question, we may need to be wary of these numbers because they may only represent one retailer, one "cut" of diamond (for instance, round or emerald), or could be from a time or geographic area where diamonds were in particularly high demand. Another possibly exists that the diamonds from this set were from a dishonest distributor. There are a number of possible hidden variables in this dataset which could explain this subset.
 
 ```{r}
 diamonds %>%
@@ -185,7 +190,7 @@ txhousing %>%
 ```
 
 ##6.4
-My assumption, just looking at the table of data arranged by descending sales (and using common sense), is that it would follow for there to be a relationship between the number of listings and the number of sales. I am not sure how strong the relationship would be due to the number of other variables associated with this question, but I would anticipate a relationship.
+My assumption, just looking at the table of data arranged by descending sales (and using common sense), is that it would follow for there to be a positive relationship between the number of listings and the number of sales. I am not sure how strong the relationship would be due to the number of other variables associated with this question, but I would anticipate a relationship.
 
 To check this assumption, I plotted the sales and listing data in a scatterplot. Based on the data, there is indeed positive relationship between the number of sales and the number of listings in this dataset. However, this only includes the instances where there was data available, and there could be a number of missing listings and sales, which would not be represented in this graph.
 ```{r}
@@ -198,7 +203,7 @@ txhousing %>%
 ```
 
 ##6.5
-The table below has the proportion of missed sales for each city. There were 548 instances of missed sales overall, and the table is organzied by city. Not all cities had missed sales.
+The table below has the proportion of missed sales for each city. There were 568 instances of missed sales overall, and the table is organzied by city. Not all cities had missed sales.
 ```{r}
 txhousing %>% mutate(miss_sales = (is.na(sales))) %>% 
   group_by(city) %>%
@@ -226,20 +231,39 @@ txhousing %>% mutate(miss_sales = (is.na(sales))) %>%
 
 ##6.6
 
-a. The distributions of the median sales price do appear different when grouped by city, within a range. See the bar graph below:
+a. The distributions of the median sales price per month do appear different when grouped by city, within a relatively confined range. See the bar graph below:
 ```{r}
 txhousing %>%
   group_by(city, month) %>%
   filter(sales > 500) %>% summarize(med_sales = median(median, na.rm = TRUE)) %>%
-  ggplot(aes(x = city, y = med_sales)) +
-  geom_bar(stat = "identity")
+  ggplot(aes(x = city, y = med_sales)) + coord_flip () +
+  geom_boxplot() +
+  ylab('Median sales per month larger than 500') +
+  xlab('City')
 ```
 
-b. Yes, I would like to investigate the highest city, Colin County as well as the lowest city which I found surprising, Corpus Christi.
+b. Yes, I would like to investigate the highest city, Colin County as well as the city with the lowest median sales price, which I found surprising, Corpus Christi. It would be interesting to view the dates and corraborating factors which may have influenced these sales prices.
 
-c. We would want to filter out cities and months with sales less than 500 because, due to the time contraints of the data set, would include the outliers caused by the economic recession and housing market decline in 2006/2007, and the crash in 2008/2009, and subsequent impact on the housing market.
+c. We would want to filter out cities and months with sales less than 500 because, due to the time contraints of the data set, would include the outliers caused by hurricanes, the economic recession and housing market decline in 2006/2007, and the crash in 2008/2009, and subsequent impact on the housing market.
+
+To demonstrate this point, I created a graph for cities with sales less than 500 and a graph of the overall sales. It contains several outliers, and contains a much more variable overall distribution.
 ```{r}
 txhousing %>%
-  group_by(city) %>%
-  filter(sales < 500)
+  group_by(city, month) %>%
+  filter(sales < 500) %>% summarize(med_sales = median(median, na.rm = TRUE)) %>%
+  ggplot(aes(x = city, y = med_sales)) + coord_flip () +
+  geom_bar(stat = "identity") +
+  ylab('Median sales per month less than 500') +
+  xlab('City')
+```
+
+Overall median sales distribution:
+```{r}
+txhousing %>%
+  group_by(city, month) %>% 
+  summarize(med_sales = median(median, na.rm = TRUE)) %>%
+  ggplot(aes(x = city, y = med_sales)) + coord_flip () +
+  geom_bar(stat = "identity") +
+  ylab('Median sales per month') +
+  xlab('City')
 ```
