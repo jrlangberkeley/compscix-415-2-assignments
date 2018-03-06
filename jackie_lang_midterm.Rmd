@@ -231,20 +231,39 @@ txhousing %>% mutate(miss_sales = (is.na(sales))) %>%
 
 ##6.6
 
-a. The distributions of the median sales price do appear different when grouped by city, within a range. See the bar graph below:
+a. The distributions of the median sales price per month do appear different when grouped by city, within a relatively confined range. See the bar graph below:
 ```{r}
 txhousing %>%
   group_by(city, month) %>%
   filter(sales > 500) %>% summarize(med_sales = median(median, na.rm = TRUE)) %>%
-  ggplot(aes(x = city, y = med_sales)) +
-  geom_bar(stat = "identity")
+  ggplot(aes(x = city, y = med_sales)) + coord_flip () +
+  geom_boxplot() +
+  ylab('Median sales per month larger than 500') +
+  xlab('City')
 ```
 
-b. Yes, I would like to investigate the highest city, Colin County as well as the city with the lowest median sales price, which I found surprising, Corpus Christi. It would be interesting to view the dates and corraborating factors which may have influences these sales prices.
+b. Yes, I would like to investigate the highest city, Colin County as well as the city with the lowest median sales price, which I found surprising, Corpus Christi. It would be interesting to view the dates and corraborating factors which may have influenced these sales prices.
 
 c. We would want to filter out cities and months with sales less than 500 because, due to the time contraints of the data set, would include the outliers caused by hurricanes, the economic recession and housing market decline in 2006/2007, and the crash in 2008/2009, and subsequent impact on the housing market.
+
+To demonstrate this point, I created a graph for cities with sales less than 500 and a graph of the overall sales. It contains several outliers, and contains a much more variable overall distribution.
 ```{r}
 txhousing %>%
-  group_by(city) %>%
-  filter(sales < 500)
+  group_by(city, month) %>%
+  filter(sales < 500) %>% summarize(med_sales = median(median, na.rm = TRUE)) %>%
+  ggplot(aes(x = city, y = med_sales)) + coord_flip () +
+  geom_bar(stat = "identity") +
+  ylab('Median sales per month less than 500') +
+  xlab('City')
+```
+
+Overall median sales distribution:
+```{r}
+txhousing %>%
+  group_by(city, month) %>% 
+  summarize(med_sales = median(median, na.rm = TRUE)) %>%
+  ggplot(aes(x = city, y = med_sales)) + coord_flip () +
+  geom_bar(stat = "identity") +
+  ylab('Median sales per month') +
+  xlab('City')
 ```
