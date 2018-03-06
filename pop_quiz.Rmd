@@ -1,0 +1,18 @@
+---
+title: "Pop Quiz"
+author: "Jackie Lang"
+date: "February 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_bar(mapping = aes(x = drv, fill = class), position = "dodge") +
+  xlab("Drive of Vehicle") +
+  coord_flip()
+```

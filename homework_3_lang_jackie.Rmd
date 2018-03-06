@@ -1,0 +1,29 @@
+---
+title: "homework_3_lang_jackie"
+author: "Jackie Lang"
+date: "February 13, 2018"
+output: html_document:
+  self_contained: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+warning = FALSE
+message = FALSE
+library(tidyverse)
+```
+
+##3.8.1.1
+The problem with this plot is that it has a continuous variable on each axis, and comparing city miles to highway miles with no categorical variable doesn't really make sense.
+
+##3.8.1.2
+Width and Height are the two parameters which control the amount of jittering. This serves to add "both positive and negative directions, so the total spread is twice the value specified" (from ?position_jitter)
+
+##3.8.1.3
+The main difference between jitter and geom_count is that jitter creates randomness in the data by adding arbitrary noise in order to make a plot/graph easier to read. Geom_count "counts the number of observatiosn at each location, then maps the count to point area." Like jitter, it is designed to deal with overplotting and difficult-to-read plots, but unlike jitter, it counts overlapping data points and plots them based on observed values.
+
+##3.8.1.4
+
+```{r}
+
+```
