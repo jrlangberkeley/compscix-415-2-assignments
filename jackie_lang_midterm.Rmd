@@ -1,0 +1,42 @@
+---
+title: "jackie_lang_midterm"
+output: 
+  html_document:
+    self_contained: TRUE
+    toc: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+warning = FALSE
+message = FALSE
+library(tidyverse)
+```
+#MIDTERM
+
+##The tidyverse package
+
+##1.Can you name which package is associated with each task below?
+
+a. ***ggplot2*** is the tidyverse package best tasked with plotting graphs. "ggplot2 is a system for declaratively creating graphics, based on The Grammar of Graphics. You provide the data, tell ggplot2 how to map variables to aesthetics, what graphical primitives to use, and it takes care of the details." (citation: http://ggplot2.tidyverse.org/)
+
+b. ***dplyr*** is the tidyverse package for data munging and wrangling. It "is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges." (citation: http://dplyr.tidyverse.org/)
+
+c. ***tidyr*** is the tidyverse package designed to assist with creating "tidy data." It includes the functions to spread and gather data to reshape it to ensure that each variable is in a column, each observation is in a row, and each value is in a cell (citation: http://tidyr.tidyverse.org/)
+
+d. ***readr*** is the tidyverse package for importing and exporting data. "The goal of readr is to provide a fast and friendly way to read rectangular data (like csv, tsv, and fwf). It is designed to flexibly parse many types of data found in the wild, while still cleanly failing when data unexpectedly changes." (citation: http://readr.tidyverse.org/)
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+```

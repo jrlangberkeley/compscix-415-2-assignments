@@ -30,3 +30,26 @@ data(WorldCities)
 region_col<-WorldCities$region
 unique(region_col)
 ```
+```{r}
+data(WorldCities)
+country_col<-select(WorldCities, country)
+country_col<-WorldCities %>% select(country)
+```
+
+```{r}
+WorldCities %>% select(region) %>% head(5)
+```
+```{r}
+WorldCities %>% select(country) %>% unique() %>% head(9)
+```
+```{r}
+WorldCities %>% ggplot(aes(x=population)) + geom_histogram()
+##'stat_bin()' using bins=30' Pick better value with 'binwidth'
+```
+```{r}
+WorldCities %>% ggplot(aes(x= population)) + geom_histogram() + xlab('City Population')
+```
+```{r}
+WorldCities %>% ggplot(aes(x=population)) + geom_histogram() + xlab('City Population') + ylab('Cities') + ggtitle('Population') + theme_bw()
+```
+
